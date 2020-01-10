@@ -1,6 +1,4 @@
 const config = {
-    // 启动端口
-    port: 3000,
     // 数据库配置
     database: {
         DATABASE: 'library',
@@ -8,6 +6,10 @@ const config = {
         PASSWORD: 'fuzhi001',
         PORT: '3306',
         HOST: '192.168.60.20'
+    },
+    // sys系统配置
+    sys: {
+      JWT_SECRET: "5ad2c6d54087f12e4b14b020a3ab1c6c933d137a6a04d1a5d3d5370075298f0c"
     }
 }
 
