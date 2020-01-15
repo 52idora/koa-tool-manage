@@ -16,6 +16,7 @@ const users = require('./routes/users')
 const type = require('./routes/type')
 const depart = require('./routes/depart')
 const sysUser = require('./routes/sys-user')
+const thing = require('./routes/thing')
 
 // error handler
 onerror(app)
@@ -24,12 +25,12 @@ onerror(app)
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
-app.use(jwtKoa({secret:config.sys.JWT_SECRET}).unless({
+/*app.use(jwtKoa({secret:config.sys.JWT_SECRET}).unless({
       path: [/^\/sysUser\/login/] //数组中的路径不需要通过jwt验证
-}))
+}))*/
 app.use(async (ctx, next)=> {
   ctx.set('Access-Control-Allow-Origin', '*');
-  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
+  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization,myauth, Accept, X-Requested-With , yourHeaderFeild');
   ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
   if (ctx.method == 'OPTIONS') {
     ctx.body = 200;
@@ -60,6 +61,7 @@ app.use(users.routes(), users.allowedMethods())
 app.use(type.routes(), type.allowedMethods())
 app.use(depart.routes(), depart.allowedMethods())
 app.use(sysUser.routes(), sysUser.allowedMethods())
+app.use(thing.routes(), thing.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

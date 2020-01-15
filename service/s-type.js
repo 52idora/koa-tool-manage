@@ -1,14 +1,89 @@
 const allSqlAction = require("../lib/mysql")
+const MSG = require("../config/msgs")
 
-async function typeAdd(parentId, typeName) {
-    let sql = `insert into type(parent_id,type_name) values ("${parentId}", "${typeName}")`
+/**
+ * @Description: 添加物品
+ * @param: [departName,userId(管理员ID)]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function add(parentId,typeName,userId) {
+    let sql = `insert into type(parent_id,type_name,create_user) values ("${parentId}","${typeName}", "${userId}")`
     return allSqlAction.allSqlAction(sql).then(res => {
-        return { msg: res, code: 1 }
-    }).catch(() => {
-        return { msg: "sql error", code: 0 }
+        return MSG.SUCCESS
+    }).catch((e)=> {
+        console.log(e)
+        return MSG.SQL_ERROR
     })
 }
 
+/**
+ * @Description: 修改物品
+ * @param: [departName,userId(管理员ID),departId]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function edit(parentId,typeName,typeId,userId) {
+    let sql = `update type set type_name="${typeName}",parent_id="${parentId}",create_user="${userId}" where id="${typeId}"`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        return MSG.SUCCESS
+    }).catch((e) => {
+        console.log(e)
+        return MSG.SQL_ERROR
+    })
+}
+
+/**
+ * @Description: 删除物品
+ * @param: [thingId]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function del(typeId) {
+    let sql = `delete from type where id="${typeId}"`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        return MSG.SUCCESS
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+}
+
+/**
+ * @Description: 物品分页
+ * @param: [departId,userId(管理员ID)]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function page(current,size) {
+    let result = {
+        state:MSG.SUCCESS.state,
+        msg:MSG.SUCCESS.msg,
+    }
+    let data = {'current':current};
+    let sql = `SELECT t.id,t.type_name,p.type_name parent_name FROM type t LEFT JOIN type p ON p.id=t.parent_id order by t.create_time desc limit ${(current-1)*size},${size}`
+    let sql1 = `select count(1) count from type`
+    await allSqlAction.allSqlAction(sql).then(res => {
+        data.records = res;
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+
+    await allSqlAction.allSqlAction(sql1).then(res => {
+        data.total = res[0]['count']
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+    result.data = data
+    return result
+}
+
 module.exports={
-    typeAdd
+    add,
+    edit,
+    del,
+    page
 }

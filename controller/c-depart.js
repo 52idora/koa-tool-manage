@@ -5,8 +5,8 @@ const util = require('util')
 const verify = util.promisify(jwt.verify)
 
 async function add(ctx,next){
-    let {departName,userId} = ctx.request.body
-    let data = await departS.add(departName,userId);
+    let {departName} = ctx.request.body
+    let data = await departS.add(departName,config.default.USERID);
     return ctx.response.body = data
 }
 
@@ -23,10 +23,10 @@ async function del(ctx,next){
 }
 
 async function page(ctx,next){
-    const token = ctx.header.authorization  // 获取jwt
-    console.log(token)
-    let payload = await verify(token.split(' ')[1], config.sys.JWT_SECRET)
-    console.log(payload)
+    // const token = ctx.header.authorization  // 获取jwt
+    // console.log(token)
+    // let payload = await verify(token.split(' ')[1], config.sys.JWT_SECRET)
+    // console.log(payload)
     let {current,size} = ctx.request.body
     let data = await departS.page(current,size)
     return ctx.response.body = data

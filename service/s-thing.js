@@ -1,0 +1,87 @@
+const allSqlAction = require("../lib/mysql")
+const MSG = require("../config/msgs")
+
+/**
+ * @Description: 添加物品
+ * @param: [departName,userId(管理员ID)]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function add(thingNo,thingName,thingImg,totalNum,remark,userId) {
+    let sql = `insert into thing(thing_no,thing_name,thing_img,total_num,rest_num,remark,create_user) values ("${thingNo}","${thingName}","${thingImg}","${totalNum}","${totalNum}","${remark}", "${userId}")`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        return MSG.SUCCESS
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+}
+
+/**
+ * @Description: 修改物品
+ * @param: [departName,userId(管理员ID),departId]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function edit(thingName,thingId,userId) {
+    let sql = `update thing set thing_name="${thingName}",create_user="${userId}" where id="${thingId}"`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        return MSG.SUCCESS
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+}
+
+/**
+ * @Description: 删除物品
+ * @param: [thingId]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function del(thingId) {
+    let sql = `delete from thing where id="${thingId}"`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        return MSG.SUCCESS
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+}
+
+/**
+ * @Description: 物品分页
+ * @param: [departId,userId(管理员ID)]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function page(current,size) {
+    let result = {
+        state:MSG.SUCCESS.state,
+        msg:MSG.SUCCESS.msg,
+    }
+    let data = {'current':current};
+    let sql = `select * from thing order by create_time desc limit ${(current-1)*size},${size}`
+    let sql1 = `select count(1) count from thing`
+    await allSqlAction.allSqlAction(sql).then(res => {
+        data.records = res;
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+
+    await allSqlAction.allSqlAction(sql1).then(res => {
+        data.total = res[0]['count']
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+    result.data = data
+    return result
+}
+
+module.exports={
+    add,
+    edit,
+    del,
+    page
+}
