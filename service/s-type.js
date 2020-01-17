@@ -64,7 +64,7 @@ async function page(current,size) {
         msg:MSG.SUCCESS.msg,
     }
     let data = {'current':current};
-    let sql = `SELECT t.id,t.type_name,p.type_name parent_name FROM type t LEFT JOIN type p ON p.id=t.parent_id order by t.create_time desc limit ${(current-1)*size},${size}`
+    let sql = `SELECT t.id,t.type_name,p.type_name parent_name FROM type t LEFT JOIN type p ON p.id=t.parent_id order by t.parent_id asc limit ${(current-1)*size},${size}`
     let sql1 = `select count(1) count from type`
     await allSqlAction.allSqlAction(sql).then(res => {
         data.records = res;
@@ -81,9 +81,30 @@ async function page(current,size) {
     return result
 }
 
+/**
+ * @Description: 删除物品
+ * @param: [thingId]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function all() {
+    let sql = `SELECT id,type_name FROM type`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        return {
+                state:MSG.SUCCESS.state,
+                msg:MSG.SUCCESS.msg,
+                data:res
+               }
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+}
+
 module.exports={
     add,
     edit,
     del,
-    page
+    page,
+    all
 }

@@ -89,9 +89,31 @@ async function page(current,size,keyword) {
     return result
 }
 
+/**
+ * @Description: 会员分页
+ * @param: [departId,userId(管理员ID)]
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function listByDepart(departId) {
+    let result = {
+        state:MSG.SUCCESS.state,
+        msg:MSG.SUCCESS.msg,
+    }
+    let sql = `SELECT nick_name,id FROM users WHERE depart_id="${departId}"`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        result.data = res;
+        return result
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+}
+
 module.exports={
     add,
     edit,
     del,
-    page
+    page,
+    listByDepart
 }

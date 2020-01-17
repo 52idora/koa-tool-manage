@@ -79,9 +79,31 @@ async function page(current,size) {
     return result
 }
 
+/**
+ * @Description: 部门
+ * @param:
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/9 16:19
+ */
+async function all() {
+    let result = {
+        state:MSG.SUCCESS.state,
+        msg:MSG.SUCCESS.msg,
+    }
+    let sql = `SELECT id,depart_name FROM depart`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        result.data = res
+        return result
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
+}
+
 module.exports={
     add,
     edit,
     del,
-    page
+    page,
+    all
 }

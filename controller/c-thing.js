@@ -25,9 +25,29 @@ async function page(ctx,next){
     return ctx.response.body = data
 }
 
+async function borrow(ctx,next){
+    let {thingNo,userId} = ctx.request.body
+    let data = await thingS.borrow(thingNo,userId)
+    return ctx.response.body = data
+}
+
+async function sendback(ctx,next){
+    let {thingNo,userId} = ctx.request.body
+    let data = await thingS.sendback(thingNo,userId)
+    return ctx.response.body = data
+}
+
+async function stastic(ctx,next){
+    let data = await thingS.stastic()
+    return ctx.response.body = data
+}
+
 module.exports={
     add,
     edit,
     del,
-    page
+    page,
+    borrow,
+    sendback,
+    stastic
 }

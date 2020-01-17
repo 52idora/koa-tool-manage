@@ -25,9 +25,16 @@ async function page(ctx,next){
     return ctx.response.body = data
 }
 
+async function listByDepart(ctx,next){
+    let {departId} = ctx.request.body
+    let data = await usersS.listByDepart(departId)
+    return ctx.response.body = data
+}
+
 module.exports={
     add,
     edit,
     del,
-    page
+    page,
+    listByDepart
 }

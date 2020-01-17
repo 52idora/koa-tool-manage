@@ -32,9 +32,15 @@ async function page(ctx,next){
     return ctx.response.body = data
 }
 
+async function all(ctx,next){
+    let data = await departS.all()
+    return ctx.response.body = data
+}
+
 module.exports={
     add,
     edit,
     del,
-    page
+    page,
+    all
 }
