@@ -2,8 +2,8 @@ const thingS = require("../service/s-thing")
 const config = require("../config/config")
 
 async function add(ctx,next){
-    let {thingNo,thingName,thingImg,totalNum,remark} = ctx.request.body
-    let data = await thingS.add(thingNo,thingName,thingImg,totalNum,remark,config.default.USERID);
+    let {thingNo,thingName,thingImg,totalNum,typeId,remark} = ctx.request.body
+    let data = await thingS.add(thingNo,thingName,thingImg,totalNum,typeId,remark,config.default.USERID);
     return ctx.response.body = data
 }
 
@@ -20,8 +20,14 @@ async function del(ctx,next){
 }
 
 async function page(ctx,next){
-    let {current,size} = ctx.request.body
-    let data = await thingS.page(current,size)
+    let {current,size,keyword} = ctx.request.body
+    let data = await thingS.page(current,size,keyword)
+    return ctx.response.body = data
+}
+
+async function find(ctx,next){
+    let {thingId} = ctx.request.body
+    let data = await thingS.find(thingId)
     return ctx.response.body = data
 }
 
@@ -47,6 +53,7 @@ module.exports={
     edit,
     del,
     page,
+    find,
     borrow,
     sendback,
     stastic

@@ -8,11 +8,12 @@ const MSG = require("../config/msgs")
  * @auther: yuanrui
  * @date: 2020/1/9 16:19
  */
-async function add(thingNo,thingName,thingImg,totalNum,remark,userId) {
-    let sql = `insert into thing(thing_no,thing_name,thing_img,total_num,rest_num,remark,create_user) values ("${thingNo}","${thingName}","${thingImg}","${totalNum}","${totalNum}","${remark}", "${userId}")`
+async function add(thingNo,thingName,thingImg,totalNum,typeId,remark,userId) {
+    let sql = `insert into thing(thing_no,thing_name,thing_img,total_num,rest_num,thing_type,remark,create_user) values ("${thingNo}","${thingName}","${thingImg}","${totalNum}","${totalNum}","${typeId}","${remark}", "${userId}")`
     return allSqlAction.allSqlAction(sql).then(res => {
         return MSG.SUCCESS
-    }).catch(() => {
+    }).catch((e) => {
+        console.log(e)
         return MSG.SQL_ERROR
     })
 }
@@ -76,17 +77,25 @@ async function stastic() {
  * @auther: yuanrui
  * @date: 2020/1/9 16:19
  */
-async function page(current,size) {
+async function page(current,size,keyword) {
     let result = {
         state:MSG.SUCCESS.state,
         msg:MSG.SUCCESS.msg,
     }
     let data = {'current':current};
-    let sql = `select * from thing order by create_time desc limit ${(current-1)*size},${size}`
+    let sql = `select t.id,t.thing_name,t.total_num,t.rest_num,ty.type_name from thing t left join type ty on ty.id=t.thing_type`
+    if(keyword !=null){
+        sql += ` where t.thing_name like concat('%',"${keyword}",'%')`
+    }
+    sql += ` order by t.create_time desc limit ${(current-1)*size},${size}`
     let sql1 = `select count(1) count from thing`
+    if(keyword !=null){
+        sql1 += ` where thing_name like concat('%',"${keyword}",'%')`
+    }
     await allSqlAction.allSqlAction(sql).then(res => {
         data.records = res;
-    }).catch(() => {
+    }).catch((e) => {
+        console.log(e)
         return MSG.SQL_ERROR
     })
 
@@ -97,6 +106,26 @@ async function page(current,size) {
     })
     result.data = data
     return result
+}
+
+/**
+ * @Description: 物品详情
+ * @param:
+ * @return:
+ * @auther: yuanrui
+ * @date: 2020/1/17 13:32
+ */
+async function find(thingId) {
+    let sql = `select * from thing where id="${thingId}"`
+    return allSqlAction.allSqlAction(sql).then(res => {
+        return {
+            state: MSG.SUCCESS.state,
+            msg: MSG.SUCCESS.msg,
+            data: res[0]
+        }
+    }).catch(() => {
+        return MSG.SQL_ERROR
+    })
 }
 
 /**
@@ -228,6 +257,7 @@ module.exports={
     edit,
     del,
     page,
+    find,
     borrow,
     sendback,
     stastic
