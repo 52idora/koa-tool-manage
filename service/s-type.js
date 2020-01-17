@@ -2,7 +2,7 @@ const allSqlAction = require("../lib/mysql")
 const MSG = require("../config/msgs")
 
 /**
- * @Description: 添加物品
+ * @Description: 添加分类
  * @param: [departName,userId(管理员ID)]
  * @return:
  * @auther: yuanrui
@@ -19,7 +19,7 @@ async function add(parentId,typeName,userId) {
 }
 
 /**
- * @Description: 修改物品
+ * @Description: 修改分类
  * @param: [departName,userId(管理员ID),departId]
  * @return:
  * @auther: yuanrui
@@ -36,7 +36,7 @@ async function edit(parentId,typeName,typeId,userId) {
 }
 
 /**
- * @Description: 删除物品
+ * @Description: 删除分类
  * @param: [thingId]
  * @return:
  * @auther: yuanrui
@@ -52,7 +52,7 @@ async function del(typeId) {
 }
 
 /**
- * @Description: 物品分页
+ * @Description: 分类分页
  * @param: [departId,userId(管理员ID)]
  * @return:
  * @auther: yuanrui
@@ -82,7 +82,7 @@ async function page(current,size) {
 }
 
 /**
- * @Description: 删除物品
+ * @Description: 全部分类
  * @param: [thingId]
  * @return:
  * @auther: yuanrui
